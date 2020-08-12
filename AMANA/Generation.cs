@@ -96,7 +96,9 @@ namespace bamEpplus
             int retour_accuse = 0; // Retour du document accusé de réception
             String valeur_montant_CRBT = "";//Valeur du montant contre-rmbrssmnt
             int fragile = 0;//La fragilité des produits de colis
-            String adresse_postal = "", adresse1 = "", adresse2 = "", adresse3 = "", adresse4 = "", code_postal = "";
+            String adresse_postal;
+            String adresse1 = "", adresse2 = "", adresse3 = "", adresse4 = "";
+            Double code_postal=0;
 
             //ICollection<String> trace = new List<String>();
             //DateTime localDate = DateTime.Now;
@@ -126,15 +128,30 @@ namespace bamEpplus
                             int j = 8;
                             while (worksheet2.Cells[j, i].Value != null)
                             {
-                                
-                                while (worksheet2.Cells[j, i].Value != null)
+                                /*while (worksheet2.Cells[j, i].Value != null)
                                 {
                                     Console.WriteLine(worksheet2.Cells[j, i].Value);
                                     i++;
                                 }
                                 j++;
                                 i = 5;
+                                */
+                                switch(worksheet2.Cells[j,i].Value)
+                                {
+                                    case "NUMEROEXP": num_envoi = (string)worksheet2.Cells[j+1, i].Value;
+                                        break;
+                                    case "ADRESSEPOSTAL": code_postal = (double)worksheet2.Cells[j + 1, i].Value;
+                                        break;
+                                    case "VILLE": ville = (string)worksheet2.Cells[j + 1, i].Value;
+                                        break;
+                                    case "POID":
+                                        poids = Utilitaire.calcule_double((double)worksheet2.Cells[j + 1, i].Value, 2, 3);
+                                        break;
+                                    case "CONTREREMBOURSEMENT": contre_remboursement = (int)worksheet2.Cells[j + 1, i].Value;
+                                        break;
                                 
+                                }
+                                i++;
 
                             }
                             }
@@ -147,7 +164,7 @@ namespace bamEpplus
                     }
 
                     destination = shema.lesVilles.chercher_ville(ville);
-                    adresse_postal = adresse1 + " " + adresse2 + " " + adresse3 + " " + adresse4 + " " + code_postal;
+                    adresse_postal = adresse1 + " " + adresse2 + " " + adresse3 + " " + adresse4 + " ";
 
                         for (int i = 1; i < 14; i++)
                         {

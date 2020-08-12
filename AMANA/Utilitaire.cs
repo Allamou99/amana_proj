@@ -17,8 +17,9 @@ namespace bamEpplus
                         if (partie_decimale == 0) return partie_entiere+"";
                         return partie_entiere + "." + partie_decimale;
             }
-            public static String calcule_double(String chaine, int lng_entriere, int lng_dec)
+            public static String calcule_double(Double chaine2, int lng_entriere, int lng_dec)
             {
+                String chaine = chaine2.ToString();
                 int partie_entiere = Convert.ToInt32(chaine.Substring(0, lng_entriere));
                 int partie_decimale = Convert.ToInt32(chaine.Substring(lng_entriere, lng_dec));
                 if (partie_decimale == 0) return partie_entiere + "";
