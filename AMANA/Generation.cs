@@ -29,7 +29,6 @@ namespace bamEpplus
 
         public bool lire_PLAT(String fichier)
         {
-
             try
             {
                 StreamReader monStreamReader = new StreamReader(@fichier);
@@ -81,6 +80,7 @@ namespace bamEpplus
 
         public bool ecrire_excel()
         {
+            Console.WriteLine("we're in");
             //A.ISBAINE@poste.ma
             int index;
             String num_envoi = "";//Check digit ==> colis 
@@ -113,70 +113,41 @@ namespace bamEpplus
                     var mots = this.fichier_traite.Split('\\');
                     ExcelWorksheet worksheet = p.Workbook.Worksheets["Sheet1"];
                     index = 2;
-
-                    /** Début de déclaration des lignes d'expedition Standard */
-                    ICollection<LigneContenu> Laligne_fichier_EEESTD;
-                    ICollection<LigneContenu> Laligne_fichier_ECESTD;
-                    ICollection<LigneContenu> Laligne_fichier_EBESTD;
-                    ICollection<LigneContenu> Laligne_fichier_EBLSTD;
-                    ICollection<LigneContenu> Laligne_fichier_EBCSTD;
-                    ICollection<LigneContenu> Laligne_fichier_EBCSPC;
-                    this.liste_lignes_fichier.TryGetValue("EEESTD", out Laligne_fichier_EEESTD);
-                    this.liste_lignes_fichier.TryGetValue("ECESTD", out Laligne_fichier_ECESTD);
-                    this.liste_lignes_fichier.TryGetValue("EBESTD", out Laligne_fichier_EBESTD);
-                    this.liste_lignes_fichier.TryGetValue("EBLSTD", out Laligne_fichier_EBLSTD);
-                    this.liste_lignes_fichier.TryGetValue("EBCSTD", out Laligne_fichier_EBCSTD);
-                    this.liste_lignes_fichier.TryGetValue("EBCSPC", out Laligne_fichier_EBCSPC);
-                    /** Fin de déclaration des lignes Standard **/
-                    /** Début de déclaration des lignes d'expedition spécifique */
-
-                    foreach (LigneContenu entete in Laligne_fichier_EBCSPC)
+                    
+                    try
                     {
-                        // String chaine_code_client = "";
-                        foreach (Donnee donne in entete.liste)
+                        //ExcelPackage p = new ExcelPackage(new FileInfo(@"C:\Users\soufiane\Documents\exel_to_xml.xlsx"), true) ;
+                        FileInfo newFile = new FileInfo(@"C:\Users\soufiane\Documents\Classeur3.xlsx");
+                        ExcelPackage p2 = new ExcelPackage(newFile);
+                        
                         {
-                            switch (donne.libelle)
+                            ExcelWorksheet worksheet2 = p2.Workbook.Worksheets["Feuil1"];
+                            int i = 5;
+                            int j = 8;
+                            while (worksheet2.Cells[j, i].Value != null)
                             {
-                                case "CABINFOTRANSPORTEUR": num_envoi = Utilitaire.supprimer_espace(donne.contenu);
-                                    break;
-                                case "RAISONSOCIALE": destinataire = Utilitaire.supprimer_espace(donne.contenu);
-                                    break;
-                                case "ADRESSE1": adresse1 = Utilitaire.supprimer_espace(donne.contenu);
-                                    break;
-                                case "ADRESSE2": adresse2 = Utilitaire.supprimer_espace(donne.contenu);
-                                    break;
-                                case "ADRESSE3": adresse3 = Utilitaire.supprimer_espace(donne.contenu);
-                                    break;
-                                case "ADRESSE4": adresse4 = Utilitaire.supprimer_espace(donne.contenu);
-                                    break;
-                                case "CODEPOSTAL": code_postal = Utilitaire.supprimer_espace(donne.contenu);
-                                    break;
-                                case "VILLE": ville = Utilitaire.supprimer_espace(donne.contenu);
-                                    break;
-                                case "EXPEDITEURSMS": expediteur_sms = Utilitaire.supprimer_espace(donne.contenu);
-                                    break;
-                                case "CLIENTSMS": client_sms = Utilitaire.supprimer_espace(donne.contenu);
-                                    break;
-                                case "POID": poids = Utilitaire.calcule_double(donne.contenu, 6, 3);
-                                    break;
-                                case "VALEURDECLR": valeur_declaree = Utilitaire.calcule_double(donne.contenu, 10, 5);
-                                    break;
-                                case "CONTREREMBOURSEMENT": contre_remboursement = Convert.ToInt32(donne.contenu);
-                                    break;
-                                case "VALEURMONTANTCSRBT": valeur_montant_CRBT = Utilitaire.calcule_double(donne.contenu, 4, 2);
-                                    break;
-                                case "POD": retour_accuse = Convert.ToInt32(donne.contenu);
-                                    break;
-                                case "FRAGILE": fragile = Convert.ToInt32(donne.contenu);
-                                    break;
+                                
+                                while (worksheet2.Cells[j, i].Value != null)
+                                {
+                                    Console.WriteLine(worksheet2.Cells[j, i].Value);
+                                    i++;
+                                }
+                                j++;
+                                i = 5;
+                                
 
-                                default: break;
                             }
+                            }
+                            Console.WriteLine("done");
+                        
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("voici l'exeption : " + ex);
+                    }
 
-                        }
-
-                        destination = shema.lesVilles.chercher_ville(ville);
-                        adresse_postal = adresse1 + " " + adresse2 + " " + adresse3 + " " + adresse4 + " " + code_postal;
+                    destination = shema.lesVilles.chercher_ville(ville);
+                    adresse_postal = adresse1 + " " + adresse2 + " " + adresse3 + " " + adresse4 + " " + code_postal;
 
                         for (int i = 1; i < 14; i++)
                         {
@@ -212,32 +183,38 @@ namespace bamEpplus
                         worksheet.Cells[index, 13].Value = ville;
                         index++;
 
-                    }
-                   // Console.WriteLine("Fichier excel généré");
-                    String nom_fichier = Utilitaire.num_fichier(parametre);
+                
+                // Console.WriteLine("Fichier excel généré");
+                String nom_fichier = Utilitaire.num_fichier(parametre);
                     String chemin_complet_fichier = @parametre.chemin_genration_excel + @"\" + nom_fichier;
+                    Console.WriteLine(chemin_complet_fichier);
                     Byte[] bin = p.GetAsByteArray();
                     File.WriteAllBytes(@chemin_complet_fichier, bin);
                     exel_to_txt_two(chemin_complet_fichier);
 
 
-                    Utilitaire.fichier_trace(parametre.chemin_archive_data, "Fichier excel généré et enregistrer " + chemin_complet_fichier);
+                Utilitaire.fichier_trace(parametre.chemin_archive_data, "Fichier excel généré et enregistrer " + chemin_complet_fichier);
                     //trace.Add("Fichier excel généré et enregistrer " + chemin_complet_fichier);
                     //Console.WriteLine("Enregistrer Fichier excel ");
 
-
                 }
-               // System.IO.File.AppendAllLines(@chemin_complet_erreur, trace);
             }
+            // System.IO.File.AppendAllLines(@chemin_complet_erreur, trace);
             catch (Exception ex)
             {
                 //Console.WriteLine(ex.ToString());
                 Utilitaire.fichier_trace(parametre.chemin_archive_data, "EXCEPTION de fichier excel ....." + ex.ToString());
                 //trace.Add("EXCEPTION de fichier excel ....." + ex.ToString());
                 //System.IO.File.AppendAllLines(@chemin_complet_erreur, trace);
+                
             }
             return true;
         }
+            
+            
+        
+        
+        
         static void exel_to_txt_two(String path)
         {
             try
@@ -255,7 +232,7 @@ namespace bamEpplus
                     FileStream fs = File.Create(fileName);
                     fs.Close();
                     StreamWriter sw = new StreamWriter(fileName, true);
-                    ExcelWorksheet worksheet = p.Workbook.Worksheets["Feuil1"];
+                    ExcelWorksheet worksheet = p.Workbook.Worksheets["Sheet1"];
                     int i = 1;
                     int j = 1;
                     while (worksheet.Cells[j, i].Value != null)
@@ -267,12 +244,12 @@ namespace bamEpplus
                             i++;
                         }
                         j++;
-                        i = 3;
+                        i = 1;
                         sw.WriteLine("");
 
                     }
                     sw.Close();
-                    Console.WriteLine("done");
+                    
                 }
             }
             catch (Exception ex)
